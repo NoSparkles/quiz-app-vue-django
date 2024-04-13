@@ -3,14 +3,21 @@
     <QuizToast v-if="showToast" @close="showToast = false" />
     <YesNoModal v-if="showSubmitModal" question="Are you sure you want to submit your answers?" yesText="yes"
       noText="no" @yes="handleSubmit" @no="showSubmitModal = false" />
-    <RouterLink to="/">HOME</RouterLink>
+
+    <RouterLink to="/">Home</RouterLink>
+    <button v-if="!quizEnded" class="end-quiz" @click="handleSubmitButtonClick">Submit</button>
+    <Transition appear name="quiz-score">
+      <h2 v-if="quizEnded" class="quiz-score">Your result: {{ numberOfcorrectAnswers }} / {{ quiz.questions.length }}
+      </h2>
+    </Transition>
+
+
     <h1>{{ quiz.title }}</h1>
     <Question :question="quiz.questions[currentQuestion]" :current="currentQuestion" @answer="handleAnswer"
       :selectedAnswer="selectedAnswers[currentQuestion]" :quizEnded="quizEnded" :correctAnswers="correctAnswers" />
+
     <QuestionsNavigation :numOfQuestions="quiz.questions.length" :current="currentQuestion"
       @changeQuestion="changeCurrentQuestion" />
-    <button v-if="!quizEnded" class="end-quiz" @click="handleSubmitButtonClick">Submit</button>
-    <h2 v-if="quizEnded" class="quiz-score">Your result: {{ numberOfcorrectAnswers }} / {{ quiz.questions.length }}</h2>
   </div>
 </template>
 
@@ -37,7 +44,7 @@ export default {
     const currentQuestion = ref(0)
     const quiz = ref(
       {
-        title: 'Math',
+        title: 'math',
         questions: [
           {
             question: '2 + 2?',
@@ -97,7 +104,6 @@ export default {
       selectedAnswers.value[currentQuestion.value] = answer
     }
     const handleSubmitButtonClick = () => {
-      console.log(selectedAnswers.value)
       let allAnswered = true
       for (let i = 0; i < selectedAnswers.value.length; i++) {
         if (selectedAnswers.value[i] === null) {
@@ -146,51 +152,80 @@ export default {
 
 .quiz>a {
   margin-top: 20px;
+  color: black;
   font-size: 2em;
-  font-weight: bold;
   align-self: start;
   margin-left: 40px;
-  border: 4px solid rgb(94, 158, 255);
-  padding: 4px 20px;
   border-radius: 12px;
+  position: relative;
   transition: 0.1s ease;
 }
 
-.quiz>a:hover {
+.quiz>a::after {
+  content: "";
+  width: 0;
   background-color: rgb(94, 158, 255);
-  color: white;
+  height: 3px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  margin: auto;
+  transition: 0.3s ease;
+}
+
+.quiz>a:hover::after {
+  width: 100%;
 }
 
 .quiz>h1 {
   font-size: 3em;
   margin-top: 50px;
+  color: black;
 }
 
 .quiz .end-quiz {
   position: absolute;
   margin-top: 20px;
-  font-size: 2em;
-  font-weight: bold;
+  font-size: 1.4em;
   align-self: start;
   right: 40px;
-  border: 4px solid rgb(94, 158, 255);
-  color: rgb(94, 158, 255);
-  padding: 4px 20px;
-  border-radius: 12px;
+  color: black;
+  background-color: white;
+  border-radius: 4px;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 40px;
   cursor: pointer;
-  transition: 0.1s ease;
+  box-shadow: 0px 4px 10px -2px rgba(0, 0, 0, 0.5);
+  transition: 0.3s ease;
 }
 
 .quiz>.end-quiz:hover {
+  transform: translateY(-4px);
   background-color: rgb(94, 158, 255);
   color: white;
+  box-shadow: 0px 12px 10px -2px rgba(94, 158, 255, 0.5);
+
 }
 
 .quiz .quiz-score {
   position: absolute;
   font-size: 2em;
-  color: rgb(94, 158, 255);
-  border-bottom: 4px solid rgb(94, 158, 255);
+  color: white;
+  background-color: rgba(94, 158, 255, 1);
+  box-shadow: 0px 4px 10px 2px rgba(0, 0, 0, 0.4);
+  padding: 10px 40px;
+  border-radius: 40px;
   margin-top: 20px;
+}
+
+.quiz-score-enter-from {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.quiz-score-enter-active {
+  transition: 1s ease;
 }
 </style>

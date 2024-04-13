@@ -1,30 +1,62 @@
 <template>
-    <div class="question">
+    <div ref="el" class="question">
         <h1>{{ question.question }}</h1>
         <ul v-if="!quizEnded">
-            <li v-for="(item, index) in question.answers" :key="index"
-                :style="{ backgroundColor: index === selectedAnswer ? 'rgb(18, 255, 97)' : '' }"
-                @click="handleClick(index)">{{ item }}
+            <li class="hover-effect" v-for="(item, index) in question.answers" :key="index" :style="{
+                boxShadow: index === selectedAnswer ? '0px 0px 20px 0px rgba(94, 158, 255, 1)' : '',
+                color: index === selectedAnswer ? 'rgba(94, 158, 255, 0.6)' : ''
+            }" @click="handleClick(index)">{{ item }}
             </li>
         </ul>
         <ul v-else>
-            <li v-for="(item, index) in question.answers" :key="index" :style="{
-                backgroundColor: index === correctAnswers[current] ? 'rgb(18, 255, 97)' : index === selectedAnswer && selectedAnswer !== correctAnswers[current] ? 'red' : ''
-            }" @click="
-                handleClick(index)">{{ item }}
+            <li v-for=" (item, index) in question.answers" :key="index" :style="{
+                color: index === correctAnswers[current] ? 'rgb(18, 255, 97)' : index === selectedAnswer && selectedAnswer !== correctAnswers[current] ? 'rgb(255, 0, 0)' : '',
+                boxShadow: index === selectedAnswer ? '0px 0px 20px 0px rgba(94, 158, 255, 1)' : '',
+            }">{{ item }}
             </li>
         </ul>
+
     </div>
+
+
 </template>
 
 <script>
+import gsap from 'gsap'
+import { ref, watch, onMounted } from 'vue'
+
+
+
 export default {
     setup(props, { emit }) {
+        const el = ref(null)
+
         const handleClick = (index) => {
             emit('answer', index)
         }
+
+        onMounted(() => {
+            animateComponent()
+        })
+
+        watch(() => props.current, () => {
+            animateComponent()
+        });
+
+        const animateComponent = () => {
+            gsap.fromTo(el.value, {
+                opacity: 0,
+                y: 40,
+            }, {
+                opacity: 1,
+                y: 0,
+                duration: 0.2,
+            });
+        }
+
         return {
-            handleClick
+            handleClick,
+            el
         }
     },
     props: [
@@ -59,21 +91,31 @@ export default {
     list-style: none;
     width: 100%;
     display: flex;
-    gap: 10px;
+    gap: 20px;
     flex-wrap: wrap;
     margin-top: 40px;
 }
 
 .question ul li {
-    background-color: rgb(94, 158, 255);
+    background-color: white;
     flex: 1;
     padding: 10px 20px;
-    border-radius: 10px;
+    border-radius: 40px;
     min-width: 40%;
     display: flex;
     justify-content: center;
     font-size: 1.4em;
-    color: white;
+    color: black;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
     cursor: pointer;
+    transition: 0.1s ease;
+}
+
+.question ul li.hover-effect:hover {
+    box-shadow: 0px 0px 20px 0px rgba(94, 158, 255, 1);
+}
+
+.li-transition {
+    transition: 0.5s ease;
 }
 </style>
