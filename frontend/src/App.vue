@@ -14,9 +14,13 @@
   box-sizing: border-box;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 .route-enter-from {
   opacity: 0;
-  transform: translateX(0px);
+  transform: translateY(50px);
 }
 
 .route-enter-active {
@@ -25,7 +29,7 @@
 
 .route-leave-to {
   opacity: 0;
-  transform: translateX(0px);
+  transform: translateY(-50px);
 }
 
 .route-leave-active {

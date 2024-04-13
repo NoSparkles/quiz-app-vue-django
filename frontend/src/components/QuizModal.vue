@@ -41,6 +41,8 @@ export default {
   z-index: 999;
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;

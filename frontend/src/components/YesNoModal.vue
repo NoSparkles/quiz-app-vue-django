@@ -66,10 +66,12 @@ export default {
 
 <style>
 .yes-no-modal-wrapper {
-    width: 100%;
+    width: 100vw;
     height: 100vh;
+    overflow: hidden;
+    top: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
