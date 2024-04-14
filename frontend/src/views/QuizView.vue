@@ -1,6 +1,6 @@
 <template>
   <div class="quiz">
-    <QuizToast v-if="showToast" @close="showToast = false" />
+    <Toast v-if="showToast" text="You have not selected all answers" @close="showToast = false" />
     <YesNoModal v-if="showSubmitModal" question="Are you sure you want to submit your answers?" yesText="yes"
       noText="no" @yes="handleSubmit" @no="showSubmitModal = false" />
 
@@ -27,7 +27,7 @@ import { useRoute } from 'vue-router';
 import Question from '../components/Question.vue'
 import QuestionsNavigation from '../components/QuestionsNavigation.vue'
 import YesNoModal from '../components/YesNoModal.vue'
-import QuizToast from '@/components/QuizToast.vue';
+import Toast from '@/components/Toast.vue';
 
 
 export default {
@@ -36,7 +36,7 @@ export default {
     Question,
     QuestionsNavigation,
     YesNoModal,
-    QuizToast
+    Toast
   },
   setup() {
     const route = useRoute()

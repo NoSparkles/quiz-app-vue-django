@@ -3,15 +3,17 @@
         <h1>{{ question.question }}</h1>
         <ul v-if="!quizEnded">
             <li class="hover-effect" v-for="(item, index) in question.answers" :key="index" :style="{
-                boxShadow: index === selectedAnswer ? '0px 0px 20px 0px rgba(94, 158, 255, 1)' : '',
-                color: index === selectedAnswer ? 'rgba(94, 158, 255, 0.6)' : ''
+                boxShadow: index === selectedAnswer ? '0px 0px 2px 4px rgba(94, 158, 255, 0.4)' : '',
+                border: index === selectedAnswer ? '2px solid rgba(94, 158, 255, 1)' : '',
+                color: index === selectedAnswer ? 'rgba(94, 158, 255, 1)' : ''
             }" @click="handleClick(index)">{{ item }}
             </li>
         </ul>
         <ul v-else>
             <li v-for=" (item, index) in question.answers" :key="index" :style="{
                 color: index === correctAnswers[current] ? 'rgb(18, 255, 97)' : index === selectedAnswer && selectedAnswer !== correctAnswers[current] ? 'rgb(255, 0, 0)' : '',
-                boxShadow: index === selectedAnswer ? '0px 0px 20px 0px rgba(94, 158, 255, 1)' : '',
+                border: index === selectedAnswer ? '2px solid rgba(94, 158, 255, 1)' : '',
+                boxShadow: index === selectedAnswer ? '0px 0px 2px 4px rgba(94, 158, 255, 0.4)' : '',
             }">{{ item }}
             </li>
         </ul>
@@ -100,19 +102,19 @@ export default {
     background-color: white;
     flex: 1;
     padding: 10px 20px;
-    border-radius: 40px;
+    border-radius: 4px;
     min-width: 40%;
     display: flex;
     justify-content: center;
     font-size: 1.4em;
-    color: black;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+    color: #444;
     cursor: pointer;
+    border: 2px solid rgba(94, 158, 255, 0.5);
     transition: 0.1s ease;
 }
 
 .question ul li.hover-effect:hover {
-    box-shadow: 0px 0px 20px 0px rgba(94, 158, 255, 1);
+    border: 2px solid rgba(94, 158, 255, 1);
 }
 
 .li-transition {

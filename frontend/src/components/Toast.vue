@@ -1,13 +1,19 @@
 <template>
-	<div ref="el" class="quiz-toast">
-		You have not selected all answers
+	<div class="toast-wrapper">
+		<div ref="el" class="toast">
+			{{ text }}
+		</div>
 	</div>
+
 </template>
 
 <script>
 import gsap from 'gsap'
 import { onMounted, onUnmounted, ref } from 'vue';
 export default {
+	props: [
+		'text',
+	],
 	setup(props, { emit }) {
 		const el = ref(null)
 
@@ -39,8 +45,8 @@ export default {
 		setTimeout(() => {
 			let duration = 0.3
 			gsap.to(el.value, {
-				opacity: 0,
-				y: -100,
+				//opacity: 0,
+				//y: -100,
 				duration: duration
 			})
 			setTimeout(() => {
@@ -55,8 +61,15 @@ export default {
 </script>
 
 <style>
-.quiz-toast {
-	position: absolute;
+.toast-wrapper {
+	position: fixed;
+	z-index: 999;
+	left: 50%;
+	top: 0;
+	transform: translateX(-50%);
+}
+
+.toast {
 	background-color: rgb(255, 118, 140);
 	padding: 20px 80px;
 	border-radius: 20px;
