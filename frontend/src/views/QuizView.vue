@@ -1,5 +1,5 @@
 <template>
-  <div class="quiz">
+  <div v-if="quiz.title" class="quiz">
     <Toast v-if="showToast" text="You have not selected all answers" @close="showToast = false" />
     <YesNoModal v-if="showSubmitModal" question="Are you sure you want to submit your answers?" yesText="yes"
       noText="no" @yes="handleSubmit" @no="showSubmitModal = false" />
@@ -42,49 +42,45 @@ export default {
     const route = useRoute()
     const id = route.params.id
     const currentQuestion = ref(0)
-    const quiz = ref(
-      {
-        title: 'math',
-        questions: [
-          {
-            question: '2 + 2?',
-            answers: [
-              '3',
-              '2',
-              '4',
-              '5'
-            ],
-            correct: 2 // index of correct answer
-          },
-          {
-            question: '7 + 14?',
-            answers: [
-              '33',
-              '21',
-            ],
-            correct: 1 // index of correct answer
-          },
-          {
-            question: '22 + 88?',
-            answers: [
-              '100',
-              '110',
-              '2288'
-            ],
-            correct: 1 // index of correct answer
-          },
-        ]
-      })
+    const quiz = ref({
+      title: undefined,
+      questions: []
+    })
+
+    const getQuiz = async () => {
+      let res = await fetch('http://127.0.0.1:8000/quizes/' + id + '/')
+      let data = await res.json()
+
+      return data
+    }
+
+    getQuiz().then((data) => {
+      quiz.value = data
+      console.log(quiz.value)
+    })
+
+
+
+
+
+
     const correctAnswers = computed(() => {
-      let res = Array(quiz.value.questions.length)
-      quiz.value.questions.map((item, index) => {
-        res[index] = item.correct
-      })
-      return res
+      if (quiz) {
+        let res = Array(quiz.value.questions.length)
+        quiz.value.questions.map((item, index) => {
+          res[index] = item.correct
+        })
+        return res
+      }
+      return []
+
     })
     const selectedAnswers = ref(Array(quiz.value.questions.length).fill(null))
     const quizEnded = ref(false)
     const numberOfcorrectAnswers = computed(() => {
+      if (!quiz) {
+        return 0
+      }
       let score = 0
       for (let i = 0; i < selectedAnswers.value.length; i++) {
         if (selectedAnswers.value[i] == quiz.value.questions[i].correct) {

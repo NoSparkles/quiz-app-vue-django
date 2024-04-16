@@ -1,12 +1,12 @@
 <template>
     <div ref="el" class="question">
-        <h1>{{ question.question }}</h1>
+        <h1>{{ question.body }}</h1>
         <ul v-if="!quizEnded">
             <li class="hover-effect" v-for="(item, index) in question.answers" :key="index" :style="{
                 boxShadow: index === selectedAnswer ? '0px 0px 2px 4px rgba(94, 158, 255, 0.4)' : '',
                 border: index === selectedAnswer ? '2px solid rgba(94, 158, 255, 1)' : '',
                 color: index === selectedAnswer ? 'rgba(94, 158, 255, 1)' : ''
-            }" @click="handleClick(index)">{{ item }}
+            }" @click="handleClick(index)">{{ item.body }}
             </li>
         </ul>
         <ul v-else>
@@ -14,7 +14,7 @@
                 color: index === correctAnswers[current] ? 'rgb(18, 255, 97)' : index === selectedAnswer && selectedAnswer !== correctAnswers[current] ? 'rgb(255, 0, 0)' : '',
                 border: index === selectedAnswer ? '2px solid rgba(94, 158, 255, 1)' : '',
                 boxShadow: index === selectedAnswer ? '0px 0px 2px 4px rgba(94, 158, 255, 0.4)' : '',
-            }">{{ item }}
+            }">{{ item.body }}
             </li>
         </ul>
 

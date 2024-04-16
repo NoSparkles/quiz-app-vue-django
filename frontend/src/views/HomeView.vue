@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import QuizModal from '../components/QuizModal.vue'
 import router from '@/router'
 import gsap from 'gsap'
@@ -36,52 +36,28 @@ export default {
     QuizModal
   },
   setup() {
+    const getQuizes = async () => {
+      let res = await fetch('http://127.0.0.1:8000/quizes/')
+      let data = await res.json()
+      console.log(data)
+      return data
+    }
+
     const search = ref('')
-    const quizes = ref([
-      {
-        title: 'math',
-        numOfQuestions: 10,
-        id: 1
-      },
-      {
-        title: 'literature',
-        numOfQuestions: 11,
-        id: 2
-      },
-      {
-        title: 'math 2',
-        numOfQuestions: 14,
-        id: 3
-      },
-      {
-        title: 'science',
-        numOfQuestions: 22,
-        id: 4
-      },
-      {
-        title: 'physics',
-        numOfQuestions: 7,
-        id: 5
-      },
-      {
-        title: 'IT',
-        numOfQuestions: 15,
-        id: 6
-      },
-      {
-        title: 'Vue',
-        numOfQuestions: 20,
-        id: 7
-      },
-    ])
+    const quizes = ref([])
     const showModal = ref(false)
     const modalDetails = ref({
       title: '',
       numOfQuestions: 0,
     })
 
+    getQuizes().then((data) => quizes.value = data)
+
     const computedQuizes = computed(() => {
-      return quizes.value.filter(item => item.title.toLowerCase().includes(search.value.toLowerCase()))
+      if (quizes.value.length) {
+        return quizes.value.filter(item => item.title.toLowerCase().includes(search.value.toLowerCase()))
+      }
+      return []
     })
 
     const toggleModal = (index) => {

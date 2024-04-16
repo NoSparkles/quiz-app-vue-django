@@ -382,4 +382,15 @@ export default {
     transform: translateY(-4px);
     box-shadow: 0px 0px 10px 2px rgba(18, 255, 97, 0.5);
 }
+
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+}
+
+.list-enter-active,
+.list-leave-active,
+.list-move {
+    transition: 0.5s ease;
+}
 </style>
