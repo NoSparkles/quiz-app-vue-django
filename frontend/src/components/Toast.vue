@@ -45,8 +45,8 @@ export default {
 		setTimeout(() => {
 			let duration = 0.3
 			gsap.to(el.value, {
-				//opacity: 0,
-				//y: -100,
+				opacity: 0,
+				y: -100,
 				duration: duration
 			})
 			setTimeout(() => {

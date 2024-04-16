@@ -1,5 +1,5 @@
 <template>
-  <div class="quiz-modal-wrapper" @click.self="$emit('close')">
+  <div class="quiz-modal-wrapper" @click.self="handleClick">
     <div ref="el" class="quiz-modal">
       <h1>{{ title }}</h1>
       <p>Number of questions: {{ numOfQuestions }}</p>
@@ -16,19 +16,33 @@ export default {
     'title',
     'numOfQuestions'
   ],
-  setup() {
+  setup(props, { emit }) {
     const el = ref(null)
     onMounted(() => {
       gsap.fromTo(el.value, {
-        scale: 0.5
+        scale: 1.2
       }, {
-
         scale: 1,
-        duration: 0.2
+        duration: 0.2,
       })
     })
+    const handleClick = () => {
+      console.log()
+      gsap.fromTo(el.value, {
+        opacity: 1,
+        scale: 1
+      }, {
+        opacity: 0,
+        scale: 1.2,
+        duration: 0.2
+      })
+      setTimeout(() => {
+        emit('close')
+      }, 200);
+    }
     return {
-      el
+      el,
+      handleClick
     }
   }
 }
@@ -51,7 +65,7 @@ export default {
 
 .quiz-modal-wrapper .quiz-modal {
   background-color: white;
-  padding: 40px 100px;
+  padding: 100px 80px;
   display: flex;
   flex-direction: column;
   border-radius: 20px;
@@ -60,7 +74,7 @@ export default {
 .quiz-modal-wrapper .quiz-modal h1 {
   align-self: center;
   text-align: center;
-  max-width: 80%;
+  max-width: 100%;
   text-wrap: wrap;
   color: rgb(94, 158, 255);
 }

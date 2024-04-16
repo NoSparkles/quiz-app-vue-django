@@ -26,7 +26,7 @@ export default {
         onMounted(() => {
             gsap.fromTo(el.value, {
                 opacity: 0,
-                scale: 0.5
+                scale: 1.2
             }, {
                 opacity: 1,
                 scale: 1,
@@ -40,7 +40,7 @@ export default {
                 scale: 1
             }, {
                 opacity: 0,
-                scale: 0.5,
+                scale: 1.2,
                 duration: 0.2
             })
         }

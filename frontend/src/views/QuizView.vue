@@ -59,11 +59,6 @@ export default {
       console.log(quiz.value)
     })
 
-
-
-
-
-
     const correctAnswers = computed(() => {
       if (quiz) {
         let res = Array(quiz.value.questions.length)
