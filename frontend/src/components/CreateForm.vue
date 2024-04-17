@@ -5,30 +5,37 @@
       <YesNoModal v-if="showModal" question="Are you sure you want to create this quiz?" yesText="yes" noText="no"
         @no="() => { showModal = false }" @yes="handleSubmit" />
       <button class="submit">Submit</button>
-      <textarea class="title" type="text" v-model="title" placeholder="Title" />
+      <textarea class="title" type="text" v-model="title" placeholder="Title"
+        :style="{ border: titleError ? '1px solid red' : '1px solid white' }" />
       <ul class="questions">
         <li v-for="(question, qIndex) in questions" :key="qIndex">
           <div class="remove-question">
             <button type="button" @click="() => removeQuestion(qIndex)">Remove question</button>
           </div>
           <div class="question-wrapper">
-            <label>{{ qIndex + 1 }}.</label>
-            <input type="text" :placeholder="'Question'" v-model="questions[qIndex].body">
+            <label :style="{ color: questionsErrors.has(qIndex) ? 'red' : '' }">{{ qIndex + 1
+              }}.</label>
+            <input type="text" :placeholder="'Question'" v-model="questions[qIndex].body"
+              :style="{ borderBottom: questionsErrors.has(qIndex) ? '1px solid red' : '' }">
           </div>
 
           <ul class="answers">
             <li v-for="(answer, aIndex) in question.answers" :key="aIndex">
               <label :for="qIndex + '-' + aIndex" class="radio-container" :style="{
                 boxShadow: aIndex === question.correct ? '0px 0px 2px 4px rgba(94, 158, 255, 0.4)' : '',
-                border: aIndex === question.correct ? '2px solid rgba(94, 158, 255, 0.8)' : '',
+                border: aIndex === question.correct ? '2px solid rgba(94, 158, 255, 0.8)' : correctErrors.has(qIndex) ? '2px solid red' : '',
                 color: aIndex === question.correct ? 'rgba(94, 158, 255, 1)' : ''
               }">
                 Correct answer
                 <input :id="qIndex + '-' + aIndex" type="radio" :value="aIndex" v-model="question.correct" />
               </label>
 
-              <label class="answer-label">{{ aIndex + 1 }}.</label>
-              <input class="answer" type="text" :placeholder="'Answer'" v-model="question.answers[aIndex].body">
+              <label :style="{ color: answersErrors.has(`${qIndex}-${aIndex}`) ? 'red' : '' }" class="answer-label">{{
+                aIndex
+                + 1
+              }}.</label>
+              <input :style="{ borderBottom: answersErrors.has(`${qIndex}-${aIndex}`) ? '1px solid red' : '' }"
+                class="answer" type="text" :placeholder="'Answer'" v-model="question.answers[aIndex].body">
               <button type="button" class="remove" @click="() => removeAnswer(qIndex, aIndex)">Remove
                 answer</button>
             </li>
@@ -72,6 +79,10 @@ export default {
     const showModal = ref(false)
     const toastText = ref('')
     const showToast = ref(false)
+    const titleError = ref(false)
+    const questionsErrors = ref(new Set())
+    const answersErrors = ref(new Set())
+    const correctErrors = ref(new Set())
 
     const addAnswer = (qIndex) => {
       if (questions.value[qIndex].answers.length == 4) {
@@ -88,6 +99,7 @@ export default {
         showToast.value = true
         return
       }
+      answersErrors.value.clear()
       questions.value[qIndex].answers = questions.value[qIndex].answers.filter((item, i) => {
         return i !== aIndex
       })
@@ -119,6 +131,9 @@ export default {
         showToast.value = true
         return
       }
+      questionsErrors.value.clear()
+      answersErrors.clear()
+      correctErrors.value.clear()
       questions.value = questions.value.filter((item, i) => {
         return i !== qIndex
       })
@@ -128,21 +143,37 @@ export default {
       let ok = true
       if (title.value.length === 0) {
         ok = false
+        titleError.value = true
       }
       else {
-        questions.value.map((question) => {
-          if (question.correct === null || question.body === '' || question.correct === undefined) {
+        titleError.value = false
+      }
+      questions.value.map((question, q) => {
+        if (question.body === '') {
+          ok = false
+          questionsErrors.value.add(q)
+        }
+        else {
+          questionsErrors.value.delete(q)
+        }
+        if (question.correct === null || question.correct === undefined || question.correct >= question.answers.length) {
+          correctErrors.value.add(q)
+          ok = false
+          console.log('correct', q)
+        }
+        else {
+          correctErrors.value.delete(q)
+        }
+        question.answers.map((answer, a) => {
+          if (answer.body === '') {
             ok = false
+            answersErrors.value.add(`${q}-${a}`)
           }
           else {
-            question.answers.map((answer) => {
-              if (answer.body === '') {
-                ok = false
-              }
-            })
+            answersErrors.value.delete(`${q}-${a}`)
           }
         })
-      }
+      })
       if (ok === false) {
         showToast.value = true
         toastText.value = 'Not all fields are filled.'
@@ -190,7 +221,11 @@ export default {
       addQuestion,
       handleSubmitButton,
       handleSubmit,
-      removeQuestion
+      removeQuestion,
+      titleError,
+      questionsErrors,
+      answersErrors,
+      correctErrors,
     }
   },
   components: {

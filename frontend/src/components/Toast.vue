@@ -9,7 +9,7 @@
 
 <script>
 import gsap from 'gsap'
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 export default {
 	props: [
 		'text',
