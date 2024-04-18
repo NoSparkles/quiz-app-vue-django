@@ -7,8 +7,8 @@
       <button class="submit">Submit</button>
       <textarea class="title" type="text" v-model="title" placeholder="Title"
         :style="{ border: titleError ? '1px solid red' : '1px solid white' }" />
-      <ul class="questions">
-        <li v-for="(question, qIndex) in questions" :key="qIndex">
+      <TransitionGroup tag="ul" name="list" class="questions">
+        <li v-for="(question, qIndex) in questions" :key="question">
           <div class="remove-question">
             <button type="button" @click="() => removeQuestion(qIndex)">Remove question</button>
           </div>
@@ -19,33 +19,33 @@
               :style="{ borderBottom: questionsErrors.has(qIndex) ? '1px solid red' : '' }">
           </div>
 
-          <ul class="answers">
-            <li v-for="(answer, aIndex) in question.answers" :key="aIndex">
-              <label :for="qIndex + '-' + aIndex" class="radio-container" :style="{
-                boxShadow: aIndex === question.correct ? '0px 0px 2px 4px rgba(94, 158, 255, 0.4)' : '',
-                border: aIndex === question.correct ? '2px solid rgba(94, 158, 255, 0.8)' : correctErrors.has(qIndex) ? '2px solid red' : '',
-                color: aIndex === question.correct ? 'rgba(94, 158, 255, 1)' : ''
-              }">
-                Correct answer
-                <input :id="qIndex + '-' + aIndex" type="radio" :value="aIndex" v-model="question.correct" />
-              </label>
+          <TransitionGroup tag="ul" name="list" class="answers">
+        <li v-for="(answer, aIndex) in question.answers" :key="answer">
+          <label :for="qIndex + '-' + aIndex" class="radio-container" :style="{
+            boxShadow: aIndex === question.correct ? '0px 0px 2px 4px rgba(94, 158, 255, 0.4)' : '',
+            border: aIndex === question.correct ? '2px solid rgba(94, 158, 255, 0.8)' : correctErrors.has(qIndex) ? '2px solid red' : '',
+            color: aIndex === question.correct ? 'rgba(94, 158, 255, 1)' : ''
+          }">
+            Correct answer
+            <input :id="qIndex + '-' + aIndex" type="radio" :value="aIndex" v-model="question.correct" />
+          </label>
 
-              <label :style="{ color: answersErrors.has(`${qIndex}-${aIndex}`) ? 'red' : '' }" class="answer-label">{{
-                aIndex
-                + 1
-              }}.</label>
-              <input :style="{ borderBottom: answersErrors.has(`${qIndex}-${aIndex}`) ? '1px solid red' : '' }"
-                class="answer" type="text" :placeholder="'Answer'" v-model="question.answers[aIndex].body">
-              <button type="button" class="remove" @click="() => removeAnswer(qIndex, aIndex)">Remove
-                answer</button>
-            </li>
-          </ul>
-          <div class="add-answer">
-            <button type="button" class="add" @click="() => addAnswer(qIndex)">Add answer</button>
-          </div>
-          <hr v-if="qIndex !== questions.length - 1">
+          <label :style="{ color: answersErrors.has(`${qIndex}-${aIndex}`) ? 'red' : '' }" class="answer-label">{{
+            aIndex
+            + 1
+          }}.</label>
+          <input :style="{ borderBottom: answersErrors.has(`${qIndex}-${aIndex}`) ? '1px solid red' : '' }"
+            class="answer" type="text" :placeholder="'Answer'" v-model="question.answers[aIndex].body">
+          <button type="button" class="remove" @click="() => removeAnswer(qIndex, aIndex)">Remove
+            answer</button>
         </li>
-      </ul>
+      </TransitionGroup>
+      <div class="add-answer">
+        <button type="button" class="add" @click="() => addAnswer(qIndex)">Add answer</button>
+      </div>
+      <hr v-if="qIndex !== questions.length - 1">
+      </li>
+      </TransitionGroup>
       <div class="add-question">
         <button @click="addQuestion" type="button">Add question</button>
       </div>
@@ -132,7 +132,7 @@ export default {
         return
       }
       questionsErrors.value.clear()
-      answersErrors.clear()
+      answersErrors.value.clear()
       correctErrors.value.clear()
       questions.value = questions.value.filter((item, i) => {
         return i !== qIndex
@@ -292,13 +292,10 @@ export default {
   list-style: none;
   margin-top: 20px;
   box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
-  padding: 40px 20px;
+  padding: 20px 20px;
   width: 100%;
-  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
-
 }
 
 .form-wrapper form .questions li .remove-question {
@@ -326,6 +323,7 @@ export default {
 .form-wrapper form .questions>li {
   width: 100%;
   margin: auto;
+  margin-top: 40px;
 }
 
 .form-wrapper form .questions>li>.question-wrapper {
@@ -393,14 +391,15 @@ export default {
 
 .form-wrapper form .questions>li>.answers {
   margin-top: 20px;
-  display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: start;
   gap: 20px;
+  position: relative;
 }
 
 .form-wrapper form .questions>li>.answers>li {
+  margin-top: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -474,16 +473,5 @@ export default {
   background-color: white;
   transform: translateY(-4px);
   box-shadow: 0px 0px 10px 2px rgba(18, 255, 97, 0.5);
-}
-
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-}
-
-.list-enter-active,
-.list-leave-active,
-.list-move {
-  transition: 0.5s ease;
 }
 </style>

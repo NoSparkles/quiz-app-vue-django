@@ -13,12 +13,12 @@
     </div>
     <Transition @enter="animateQuizes">
       <div v-if="computedQuizes.length" class="quizes-wrapper">
-        <ul ref="ul">
-          <li v-for="(item, index) in computedQuizes" :key="index" @click="toggleModal(index)">
+        <TransitionGroup tag="ul" name="list" ref="ul">
+          <li v-for="(item, index) in computedQuizes" :key="item.id" @click="toggleModal(index)">
             <h1>{{ item.title }}</h1>
             <p>Number of questions: {{ item.numOfQuestions }}</p>
           </li>
-        </ul>
+        </TransitionGroup>
       </div>
       <h1 class="no-quizes" v-else>No quizes were found</h1>
     </Transition>
@@ -215,6 +215,7 @@ p {
   justify-content: center;
   max-width: 80%;
   margin: auto;
+  position: relative;
 }
 
 .home .quizes-wrapper ul li {
@@ -245,5 +246,23 @@ p {
 .no-quizes {
   text-align: center;
   margin-top: 40px;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+}
+
+.list-enter-active {
+  transition: 0.3s ease;
+}
+
+.list-move {
+  transition: 0.3s ease;
+}
+
+.list-leave-active {
+  position: absolute;
+  transition: 0.3s ease;
 }
 </style>
