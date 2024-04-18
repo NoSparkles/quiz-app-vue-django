@@ -1,9 +1,12 @@
 <template>
-  <div class="quiz-modal-wrapper" @click.self="handleClick">
+  <div class="quiz-modal-wrapper" @click.self="() => handleClick('close')">
     <div ref="el" class="quiz-modal">
       <h1>{{ title }}</h1>
       <p>Number of questions: {{ numOfQuestions }}</p>
       <button @click="$emit('start')">Start <span class="span1" /><span class="span2" /></button>
+      <button @click.self="() => {
+        handleClick('delete')
+      }" class="delete-quiz">Delete<span class="span1" /><span class="span2" /></button>
     </div>
   </div>
 </template>
@@ -26,8 +29,7 @@ export default {
         duration: 0.2,
       })
     })
-    const handleClick = () => {
-      console.log()
+    const handleClick = (event) => {
       gsap.fromTo(el.value, {
         opacity: 1,
         scale: 1
@@ -37,7 +39,7 @@ export default {
         duration: 0.2
       })
       setTimeout(() => {
-        emit('close')
+        emit(event)
       }, 200);
     }
     return {
@@ -148,5 +150,17 @@ export default {
 .quiz-modal-wrapper .quiz-modal button:hover .span1,
 .quiz-modal-wrapper .quiz-modal button:hover .span2 {
   height: 20px;
+}
+
+.quiz-modal-wrapper .quiz-modal button.delete-quiz {
+  position: absolute;
+  bottom: 20px;
+  bottom: 40px;
+}
+
+.quiz-modal-wrapper .quiz-modal button.delete-quiz:before,
+.quiz-modal-wrapper .quiz-modal button.delete-quiz:after,
+.quiz-modal-wrapper .quiz-modal button.delete-quiz span {
+  background-color: red;
 }
 </style>

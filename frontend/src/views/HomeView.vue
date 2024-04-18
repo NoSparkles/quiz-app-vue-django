@@ -1,9 +1,10 @@
 <template>
   <div class="home">
     <QuizModal v-if="showModal" :title="modalDetails.title" :numOfQuestions="modalDetails.numOfQuestions"
-      @close="showModal = false" @start="navigateToQuiz" />
-
-
+      @close="showModal = false" @start="navigateToQuiz" @delete="handleDelete" />
+    <YesNoModal v-if="showYesNoModal" :question="`Are you sure you want to delete quiz ${modalDetails.title}?`"
+      yesText="yes" noText="no" @yes="handleDeleteQuiz" @no="handleDontDeleteQuiz" />
+    <Toast v-if="showToast" :text="toastText" />
     <div class="create-quiz">
       <RouterLink to="create">Create quiz</RouterLink>
     </div>
@@ -30,10 +31,14 @@ import { computed, ref, watch } from 'vue'
 import QuizModal from '../components/QuizModal.vue'
 import router from '@/router'
 import gsap from 'gsap'
+import YesNoModal from '@/components/YesNoModal.vue'
+import Toast from '@/components/Toast.vue'
 
 export default {
   components: {
-    QuizModal
+    QuizModal,
+    YesNoModal,
+    Toast
   },
   setup() {
     const getQuizes = async () => {
@@ -46,6 +51,9 @@ export default {
     const search = ref('')
     const quizes = ref([])
     const showModal = ref(false)
+    const showYesNoModal = ref(false)
+    const showToast = ref(false)
+    const toastText = ref('')
     const modalDetails = ref({
       title: '',
       numOfQuestions: 0,
@@ -82,6 +90,39 @@ export default {
       })
     }
 
+    const handleDelete = () => {
+      showModal.value = false
+      showYesNoModal.value = true
+    }
+
+    const handleDeleteQuiz = () => {
+      showYesNoModal.value = false
+      const deleteQuiz = async () => {
+        let failed = false
+        try {
+          let res = await fetch('http://127.0.0.1:8000/quizes/' + modalDetails.value.id + '/', { method: "DELETE" })
+          console.log(modalDetails.value)
+        }
+        catch (error) {
+          failed = true
+          toastText.value = error
+          showToast.value = true
+        }
+        if (!failed) {
+          console.log('!failed')
+          quizes.value = quizes.value.filter((item, index) => {
+            console.log(item.title, modalDetails.value.title)
+            return item.title !== modalDetails.value.title
+          })
+        }
+      }
+      deleteQuiz()
+    }
+
+    const handleDontDeleteQuiz = () => {
+      showYesNoModal.value = false
+    }
+
 
     return {
       search,
@@ -92,6 +133,12 @@ export default {
       modalDetails,
       navigateToQuiz,
       animateQuizes,
+      handleDelete,
+      showYesNoModal,
+      handleDeleteQuiz,
+      handleDontDeleteQuiz,
+      showToast,
+      toastText,
     }
   }
 }

@@ -57,7 +57,7 @@ class QuizListSerializer(ModelSerializer):
   def get_numOfQuestions(self, quiz):
     return quiz.get_questions().count()
   
-class QuizRetrieveSerializer(ModelSerializer):
+class QuizRetrieveDestroySerializer(ModelSerializer):
   questions = QuestionSerializer(many=True)
   class Meta:
     model = models.Quiz

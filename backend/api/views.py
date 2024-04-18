@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveDestroyAPIView
 
 from . import models, serializers
 
@@ -10,6 +10,6 @@ class QuizListAPIView(ListAPIView):
     queryset = models.Quiz.objects.all()
     serializer_class = serializers.QuizListSerializer
 
-class QuizRetrieveAPIView(RetrieveAPIView):
+class QuizRetrieveDestroyAPIView(RetrieveDestroyAPIView):
     queryset = models.Quiz.objects.all()
-    serializer_class = serializers.QuizRetrieveSerializer
+    serializer_class = serializers.QuizRetrieveDestroySerializer
