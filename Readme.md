@@ -1,7 +1,7 @@
 # Quiz App
 
 ## Demo Video
-[demo.mp4](./demo.mp4)
+[Demo video](https://www.youtube.com/watch?v=8onIQZN6_AI)
 
 ## Backend Setup
 ```
